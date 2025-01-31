@@ -19,7 +19,7 @@ func GetAllEmployee() (Response, error) {
 
 	con := db.CreateCon()
 
-	rows, err := con.Query("SELECT * FROM employee")
+	rows, err := con.Query("SELECT * FROM employees")
 	if err != nil {
 		return res, err
 	}
@@ -49,7 +49,7 @@ func AddEmployee(name, address, phone_number string) (Response, error) {
 
 	con := db.CreateCon()
 
-	err := con.QueryRow("INSERT INTO employee (name, address, phone_number) VALUES ($1, $2, $3) RETURNING id", name, address, phone_number).Scan(&lastInsertedId)
+	err := con.QueryRow("INSERT INTO employees (name, address, phone_number) VALUES ($1, $2, $3) RETURNING id", name, address, phone_number).Scan(&lastInsertedId)
 	if err != nil {
 		return res, err
 	}
@@ -68,7 +68,7 @@ func UpdateEmployee(id int, name, address, phone_number string) (Response, error
 
 	con := db.CreateCon()
 
-	result, err := con.Exec("UPDATE employee SET name=$1, address=$2, phone_number=$3 WHERE id=$4", name, address, phone_number, id)
+	result, err := con.Exec("UPDATE employees SET name=$1, address=$2, phone_number=$3 WHERE id=$4", name, address, phone_number, id)
 	if err != nil {
 		return res, err
 	}
@@ -92,7 +92,7 @@ func DeleteEmployee(id int) (Response, error) {
 
 	con := db.CreateCon()
 
-	stmt, err := con.Prepare("DELETE FROM employee where id=$1")
+	stmt, err := con.Prepare("DELETE FROM employees where id=$1")
 	if err != nil {
 		return res, err
 	}
