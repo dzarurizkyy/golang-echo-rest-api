@@ -17,6 +17,7 @@ func Init() *echo.Echo {
 	e.GET("/", func(c echo.Context) error { return c.String(http.StatusOK, "Configuration success!") })
 	e.POST("/login", controllers.CheckLogin)
 	e.GET("/generate-hash/:password", controllers.GenerateHashPassword)
+	e.GET("/test-struct-validation", controllers.TestStructValidation)
 
 	g.GET("/employee", controllers.GetAllEmployee)
 	g.POST("/employee", controllers.AddEmployee)

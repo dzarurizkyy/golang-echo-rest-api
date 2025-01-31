@@ -3,13 +3,15 @@ package models
 import (
 	"golang-echo-rest-api/db"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Employee struct {
 	Id          int    `json:"id"`
-	Name        string `json:"name"`
-	Address     string `json:"address"`
-	PhoneNumber string `json:"phone_number"`
+	Name        string `json:"name" validate:"required"`
+	Address     string `json:"address" validate:"required"`
+	PhoneNumber string `json:"phone_number" validate:"required"`
 }
 
 func GetAllEmployee() (Response, error) {
@@ -47,9 +49,23 @@ func AddEmployee(name, address, phone_number string) (Response, error) {
 	var res Response
 	var lastInsertedId int
 
+	v := validator.New()
+
+	employee := Employee{
+		Name: name,
+		Address: address,
+		PhoneNumber: phone_number,
+	} 
+
+	err := v.Struct(employee)
+
+	if err != nil {
+		return res, err
+	}
+
 	con := db.CreateCon()
 
-	err := con.QueryRow("INSERT INTO employees (name, address, phone_number) VALUES ($1, $2, $3) RETURNING id", name, address, phone_number).Scan(&lastInsertedId)
+	err = con.QueryRow("INSERT INTO employees (name, address, phone_number) VALUES ($1, $2, $3) RETURNING id", name, address, phone_number).Scan(&lastInsertedId)
 	if err != nil {
 		return res, err
 	}
