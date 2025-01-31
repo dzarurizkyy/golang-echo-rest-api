@@ -8,7 +8,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-
 func GetAllEmployee(c echo.Context) error {
 	result, err := models.GetAllEmployee()
 	if err != nil {
@@ -45,6 +44,22 @@ func UpdateEmployee(c echo.Context) error {
 	result, err := models.UpdateEmployee(convId, name, address, phoneNumber)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"messsage": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func DeleteEmployee(c echo.Context) error {
+	id := c.Param("id")
+
+	convId, err := strconv.Atoi(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	}
+
+	result, err := models.DeleteEmployee(convId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, result)
