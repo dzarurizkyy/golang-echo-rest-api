@@ -13,6 +13,7 @@ func Init() *echo.Echo {
 	e.GET("/", func(c echo.Context) error { return c.String(http.StatusOK, "Configuration success!") })
 	e.GET("/employee", controllers.GetAllEmployee)
 	e.POST("/employee", controllers.AddEmployee)
-
+	e.PUT("/employee/:id", controllers.UpdateEmployee)
+	
 	return e
 }

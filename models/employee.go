@@ -63,3 +63,27 @@ func AddEmployee(name, address, phone_number string) (Response, error) {
 
 	return res, nil
 }
+
+func UpdateEmployee(id int, name, address, phone_number string) (Response, error) {
+	var res Response
+
+	con := db.CreateCon()
+
+	result, err := con.Exec("UPDATE employee SET name=$1, address=$2, phone_number=$3 WHERE id=$4", name, address, phone_number, id)
+	if err != nil {
+		return res, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return res, err
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = map[string]int64 {
+		"rows_affected": rowsAffected,
+	}
+
+	return res, nil
+}
