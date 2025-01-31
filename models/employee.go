@@ -12,7 +12,7 @@ type Employee struct {
 	PhoneNumber string `json:"phone_number"`
 }
 
-func FetchAllEmployee() (Response, error) {
+func GetAllEmployee() (Response, error) {
 	var obj Employee
 	var arrobj []Employee
 	var res Response
@@ -28,7 +28,7 @@ func FetchAllEmployee() (Response, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.Name, &obj.Address, &obj.PhoneNumber)
+		err = rows.Scan(&obj.Name, &obj.Address, &obj.PhoneNumber, &obj.Id)
 
 		if err != nil {
 			return res, err
@@ -40,6 +40,26 @@ func FetchAllEmployee() (Response, error) {
 	res.Status = http.StatusOK
 	res.Message = "Success"
 	res.Data = arrobj
+
+	return res, nil
+}
+
+func AddEmployee(name, address, phone_number string) (Response, error) {
+	var res Response
+	var lastInsertedId int
+
+	con := db.CreateCon()
+
+	err := con.QueryRow("INSERT INTO employee (name, address, phone_number) VALUES ($1, $2, $3) RETURNING id", name, address, phone_number).Scan(&lastInsertedId)
+	if err != nil {
+		return res, err
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = map[string]int{
+		"last_inserted_id": lastInsertedId,
+	}
 
 	return res, nil
 }

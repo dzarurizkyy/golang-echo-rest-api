@@ -11,7 +11,8 @@ func Init() *echo.Echo {
 	e := echo.New()
 
 	e.GET("/", func(c echo.Context) error { return c.String(http.StatusOK, "Configuration success!") })
-	e.GET("/employee", controllers.FetchAllEmployee)
+	e.GET("/employee", controllers.GetAllEmployee)
+	e.POST("/employee", controllers.AddEmployee)
 
 	return e
 }
